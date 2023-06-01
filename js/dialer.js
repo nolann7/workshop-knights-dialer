@@ -64,7 +64,6 @@ function listAcyclicPaths(startingDigit) {
   countRecursive(startingDigit, seen, [startingDigit]);
 
   function countRecursive(currentDigit, seen, currentPath = []) {
-
     const neighbors = reachableKeys(currentDigit);
     for (const neighbor of neighbors) {
       //pre
