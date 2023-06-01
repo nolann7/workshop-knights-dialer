@@ -47,47 +47,31 @@ function countPaths(startingDigit, hopCount) {
 }
 
 function listAcyclicPaths(startingDigit) {
-  // TODO: given the digit/key to start from,
-  // return a list of the distinct acyclic
-  // paths that are possible to traverse
-  //
-  // e.g. [
-  //   [4, 3, 8, 1, 6, 7, 2, 9],
-  //   [4, 3, 8, 1, 6, 0],
-  //   ...
-  // ]
+  if (!reachableKeys(startingDigit).length) return [];
   let allDistinctPaths = [];
   const seen = new Set();
   seen.add(startingDigit);
-  // const prev = new Array(10).fill(false)
 
   countRecursive(startingDigit, seen, [startingDigit]);
 
   function countRecursive(currentDigit, seen, currentPath = []) {
+    // pre
     let pathForwardFound = false;
 
     const neighbors = reachableKeys(currentDigit);
     for (const neighbor of neighbors) {
-      //pre
-      if (seen.has(neighbor)) {
-        continue;
-      }
+      if (seen.has(neighbor)) continue;
       pathForwardFound = true;
       seen.add(neighbor);
       currentPath.push(neighbor);
 
-      //recurse
       countRecursive(neighbor, seen, currentPath);
     }
-    if (!pathForwardFound) {
-      allDistinctPaths.push([...currentPath]);
-    }
+    if (!pathForwardFound) allDistinctPaths.push([...currentPath]);
 
     // post
     seen.delete(currentDigit);
     currentPath.pop();
   }
-  // debugger;
-
   return allDistinctPaths;
 }
