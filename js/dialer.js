@@ -64,19 +64,24 @@ function listAcyclicPaths(startingDigit) {
   countRecursive(startingDigit, seen, [startingDigit]);
 
   function countRecursive(currentDigit, seen, currentPath = []) {
+    let pathForwardFound = false;
+
     const neighbors = reachableKeys(currentDigit);
     for (const neighbor of neighbors) {
       //pre
       if (seen.has(neighbor)) {
         continue;
       }
+      pathForwardFound = true;
       seen.add(neighbor);
       currentPath.push(neighbor);
 
       //recurse
       countRecursive(neighbor, seen, currentPath);
     }
-    allDistinctPaths.push([...currentPath]);
+    if (!pathForwardFound) {
+      allDistinctPaths.push([...currentPath]);
+    }
 
     // post
     seen.delete(currentDigit);
