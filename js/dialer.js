@@ -29,31 +29,48 @@ function reachableKeys(startingDigit) {
 }
 
 function countPaths(startingDigit, hopCount) {
-  const memo = {};
+  count = memoize(count);
+  let allPossiblePaths = count(startingDigit, hopCount);
 
-  let allPossiblePaths = count(startingDigit, hopCount, memo);
-
-  function count(currentDigit, hopCount, memo) {
-    if (hopCount === 0) {
-      return 1;
-    }
+  function count(currentDigit, hopCount) {
+    if (hopCount === 0) return 1;
     let allNeighborsPaths = 0;
     const neighbors = reachableKeys(currentDigit);
     for (const neighbor of neighbors) {
-      let neighborPaths = 0;
-      if (`${neighbor}-${hopCount - 1}` in memo) {
-        neighborPaths = memo[`${neighbor}-${hopCount - 1}`];
-      } else {
-        neighborPaths += count(neighbor, hopCount - 1, memo);
-        memo[`${neighbor}-${hopCount - 1}`] = neighborPaths;
-      }
-      // console.log(neighborPaths);
-      allNeighborsPaths += neighborPaths;
+      allNeighborsPaths += count(neighbor, hopCount - 1);
     }
     return allNeighborsPaths;
   }
+  // function count(currentDigit, hopCount, memo = {}) {
+  //   if (hopCount === 0) {
+  //     return 1;
+  //   }
+  //   let allNeighborsPaths = 0;
+  //   const neighbors = reachableKeys(currentDigit);
+  //   for (const neighbor of neighbors) {
+  //     let neighborPaths = 0;
+  //     if (`${neighbor}-${hopCount - 1}` in memo) {
+  //       neighborPaths = memo[`${neighbor}-${hopCount - 1}`];
+  //     } else {
+  //       neighborPaths += count(neighbor, hopCount - 1, memo);
+  //       memo[`${neighbor}-${hopCount - 1}`] = neighborPaths;
+  //     }
+  //     allNeighborsPaths += neighborPaths;
+  //   }
+  //   return allNeighborsPaths;
+  // }
 
   return allPossiblePaths;
+}
+
+function memoize(fn) {
+  const memo = {};
+  return function memoized(digit, hops) {
+    if (!(`${digit}-${hops}` in memo)) {
+      memo[`${digit}-${hops}`] = fn(digit, hops);
+    }
+    return memo[`${digit}-${hops}`];
+  };
 }
 
 function listAcyclicPaths(startingDigit) {
