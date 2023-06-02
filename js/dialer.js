@@ -30,18 +30,14 @@ function reachableKeys(startingDigit) {
 
 function countPaths(startingDigit, hopCount) {
   let allPossiblePaths = 0;
+  count(startingDigit, hopCount);
 
   function count(currentDigit, hopCount) {
-    if (hopCount === 0) {
-      allPossiblePaths++;
-      return;
-    }
+    if (hopCount === 0) return allPossiblePaths++;
+
     const neighbors = reachableKeys(currentDigit);
-    for (const neighbor of neighbors) {
-      count(neighbor, hopCount - 1);
-    }
+    for (const neighbor of neighbors) count(neighbor, hopCount - 1);
   }
-  count(startingDigit, hopCount);
 
   return allPossiblePaths;
 }
@@ -63,15 +59,16 @@ function listAcyclicPaths(startingDigit) {
       if (seen.has(neighbor)) continue;
       pathForwardFound = true;
       seen.add(neighbor);
-      currentPath.push(neighbor);
 
-      countRecursive(neighbor, seen, currentPath);
+      let nextPath = [...currentPath, neighbor]
+      // currentPath.push(neighbor);
+
+      countRecursive(neighbor, seen, nextPath);
     }
-    if (!pathForwardFound) allDistinctPaths.push([...currentPath]);
-
+    if (!pathForwardFound) allDistinctPaths.push(currentPath);
     // post
     seen.delete(currentDigit);
-    currentPath.pop();
+    // currentPath.pop();
   }
   return allDistinctPaths;
 }
