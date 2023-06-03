@@ -28,7 +28,25 @@ function reachableKeys(startingDigit) {
   return adjListKeys[startingDigit];
 }
 
+// dynamic programming - bottom up approach with tabulation
+// time - O(n), space O(1)
 function countPaths(startingDigit, hopCount) {
+  let buckets = new Array(10).fill(1);
+  for (let i = 0; i < hopCount; i++) {
+    let newBuckets = new Array(10).fill(0);
+    for (let j = 0; j < newBuckets.length; j++) {
+      const neighbors = reachableKeys(j);
+      for (const neighbor of neighbors) {
+        newBuckets[j] += buckets[neighbor];
+      }
+    }
+    buckets = newBuckets;
+  }
+  return buckets[startingDigit];
+}
+
+// top down approach with memoization
+/* function countPaths(startingDigit, hopCount) {
   count = memoize(count);
   let allPossiblePaths = count(startingDigit, hopCount);
 
@@ -61,17 +79,17 @@ function countPaths(startingDigit, hopCount) {
   // }
 
   return allPossiblePaths;
-}
-
-function memoize(fn) {
-  const memo = {};
-  return function memoized(digit, hops) {
-    if (!(`${digit}-${hops}` in memo)) {
-      memo[`${digit}-${hops}`] = fn(digit, hops);
-    }
-    return memo[`${digit}-${hops}`];
-  };
-}
+  
+  function memoize(fn) {
+    const memo = {};
+    return function memoized(digit, hops) {
+      if (!(`${digit}-${hops}` in memo)) {
+        memo[`${digit}-${hops}`] = fn(digit, hops);
+      }
+      return memo[`${digit}-${hops}`];
+    };
+  }
+} */
 
 function listAcyclicPaths(startingDigit) {
   if (!reachableKeys(startingDigit).length) return [];
